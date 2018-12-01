@@ -21,7 +21,6 @@ CREATE TABLE ENDERECOS (
 	end_numero VARCHAR2(6),
 	end_cep VARCHAR2(8),
 	end_bairro VARCHAR2(255),
-	end_estado VARCHAR2(255),
 	end_cid_id NUMBER(6),
 
 	CONSTRAINT PK_ENDERECOS PRIMARY KEY (end_id),
@@ -34,7 +33,7 @@ CREATE TABLE USUARIOS (
 	usu_snome VARCHAR2(30),
 	usu_unome VARCHAR2(30),
 	usu_dt_nasc DATE,
-	usu_telefone VARCHAR2(15),
+	usu_telefone VARCHAR2(11),
 	usu_cpf VARCHAR2(15),
 	usu_email VARCHAR2(65),
 	usu_end_id NUMBER(6),
@@ -67,20 +66,20 @@ CREATE TABLE PRODUTOS (
 	prd_id NUMBER(6), 
 	prd_nome VARCHAR2(30), 
 	prd_consumo SMALLINT, 
-	prd_material VARCHAR2(15), 
-	prd_usu_id NUMBER(6),
+	prd_material VARCHAR2(15),
+	prd_peso NUMBER(6, 2),
 
-	CONSTRAINT PK_PRODUTOS PRIMARY KEY (prd_id),
-	CONSTRAINT FK_PRD_DNS FOREIGN KEY (prd_usu_id) REFERENCES USUARIOS (usu_id)
+	CONSTRAINT PK_PRODUTOS PRIMARY KEY (prd_id)
 );
 
 CREATE TABLE EXEMPLARES (
 	exp_id NUMBER(6),
-	exp_peso NUMBER(6, 2),
 	exp_prd_id NUMBER(6),
+	exp_usu_id NUMBER(6),
 
 	CONSTRAINT PK_EXEMPLARES PRIMARY KEY (exp_id),
-	CONSTRAINT FK_EXP_PRD FOREIGN KEY (exp_prd_id) REFERENCES PRODUTOS (prd_id)
+	CONSTRAINT FK_EXP_PRD FOREIGN KEY (exp_prd_id) REFERENCES PRODUTOS (prd_id),
+	CONSTRAINT FK_USU_PRD FOREIGN KEY (exp_usu_id) REFERENCES USUARIOS (usu_id)
 );
 
 CREATE TABLE TIPOS_PRODUTO (
@@ -120,14 +119,14 @@ CREATE TABLE STATUS (
 
 CREATE TABLE EMPRESTIMOS (
 	emp_id NUMBER(6),
-	emd_dt_inicio DATE, 
+	emp_dt_inicio DATE, 
 	emp_dt_final DATE, 
 	emp_sts_id NUMBER(6), 
 	emp_usu_id NUMBER(6),
-	emp_prd_id NUMBER(6),
+	emp_exp_id NUMBER(6),
 
 	CONSTRAINT PK_EMPRESTIMOS PRIMARY KEY (emp_id),
 	CONSTRAINT FK_EMP_STS FOREIGN KEY (emp_sts_id) REFERENCES STATUS (sts_id),
 	CONSTRAINT FK_EMP_USU FOREIGN KEY (emp_usu_id) REFERENCES USUARIOS (usu_id),
-	CONSTRAINT FK_EMP_PRD FOREIGN KEY (emp_prd_id) REFERENCES PRODUTOS (prd_id)
+	CONSTRAINT FK_EMP_EXP FOREIGN KEY (emp_exp_id) REFERENCES EXEMPLARES (exp_id)
 );
